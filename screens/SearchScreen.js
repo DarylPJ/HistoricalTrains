@@ -1,6 +1,13 @@
 import React, { Component } from "react";
-import { ActivityIndicator, Text, View, StyleSheet } from "react-native";
-import SearchableDropdown from "react-native-searchable-dropdown";
+import {
+  ActivityIndicator,
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Keyboard,
+} from "react-native";
 
 export default class SearchScreen extends Component {
   state = {};
@@ -21,6 +28,15 @@ export default class SearchScreen extends Component {
     });
   }
 
+  updatetartSearch = (startSearch) => {
+    this.setState({ startSearch, startStation: "" });
+  };
+
+  handleStartStationPress = (id) => {
+    this.setState({ startStation: id, startSearch: "" });
+    Keyboard.dismiss();
+  };
+
   render() {
     if (!this.state.stations) {
       return (
@@ -30,48 +46,43 @@ export default class SearchScreen extends Component {
       );
     }
 
+    let stations = [];
+
+    if (this.state.startSearch) {
+      stations = this.state.stations
+        .filter((i) =>
+          i.name.toLowerCase().startsWith(this.state.startSearch.toLowerCase())
+        )
+        .map((i) => (
+          <Text
+            key={i.id}
+            style={styles.textDropdown}
+            onPress={() => this.handleStartStationPress(i.id)}
+          >
+            {i.name}
+          </Text>
+        ));
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Historic Train Times</Text>
         </View>
+        <TextInput
+          style={styles.TextInput}
+          placeholderTextColor="black"
+          backgroundColor="white"
+          placeholder="Start"
+          onChangeText={this.updatetartSearch}
+          value={
+            this.state.startSearch ||
+            this.state.stations.find((i) => i.id === this.state.startStation)
+              ?.name
+          }
+        ></TextInput>
         <View>
-          <SearchableDropdown
-            style={{ innerWidth: 1000 }}
-            onItemSelect={(item) => {}}
-            containerStyle={{ padding: 5 }}
-            itemStyle={styles.textDropdown}
-            itemTextStyle={{ color: "white" }}
-            itemsContainerStyle={{ maxHeight: 140 }}
-            items={this.state.stations}
-            resetValue={false}
-            textInputProps={{
-              placeholder: "Start",
-              style: styles.textInput,
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          <SearchableDropdown
-            style={{ innerWidth: 1000 }}
-            onItemSelect={(item) => {}}
-            containerStyle={{ padding: 5 }}
-            onRemoveItem={(item, index) => {}}
-            itemStyle={styles.textDropdown}
-            itemTextStyle={{ color: "white" }}
-            itemsContainerStyle={{ maxHeight: 140 }}
-            items={this.state.stations}
-            resetValue={false}
-            textInputProps={{
-              placeholder: "End",
-              style: styles.textInput,
-              onTextChange: (text) => console.log(text),
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
+          <ScrollView keyboardShouldPersistTaps="always">{stations}</ScrollView>
         </View>
       </View>
     );
@@ -104,9 +115,17 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     borderRadius: 5,
+    color: "white",
   },
   header: {
     color: "white",
     fontSize: 40,
+  },
+  TextInput: {
+    padding: 12,
+    borderWidth: 1,
+    backgroundColor: "gray",
+    borderRadius: 5,
+    height: 40,
   },
 });

@@ -40,31 +40,33 @@ export default class SearchScreen extends Component {
             style={{ innerWidth: 1000 }}
             onItemSelect={(item) => {}}
             containerStyle={{ padding: 5 }}
-            onRemoveItem={(item, index) => {}}
-            itemStyle={{
-              padding: 10,
-              marginTop: 2,
-              backgroundColor: "black",
-              borderColor: "white",
-              borderWidth: 1,
-              borderRadius: 5,
-            }}
+            itemStyle={styles.textDropdown}
             itemTextStyle={{ color: "white" }}
             itemsContainerStyle={{ maxHeight: 140 }}
             items={this.state.stations}
             resetValue={false}
             textInputProps={{
               placeholder: "Start",
-              style: {
-                padding: 12,
-                borderWidth: 1,
-                backgroundColor: "gray",
-                fontSize: 20,
-                fontWeight: "bold",
-                borderRadius: 5,
-                color: "red",
-              },
-              onTextChange: (text) => alert(text),
+              style: styles.textInput,
+            }}
+            listProps={{
+              nestedScrollEnabled: true,
+            }}
+          />
+          <SearchableDropdown
+            style={{ innerWidth: 1000 }}
+            onItemSelect={(item) => {}}
+            containerStyle={{ padding: 5 }}
+            onRemoveItem={(item, index) => {}}
+            itemStyle={styles.textDropdown}
+            itemTextStyle={{ color: "white" }}
+            itemsContainerStyle={{ maxHeight: 140 }}
+            items={this.state.stations}
+            resetValue={false}
+            textInputProps={{
+              placeholder: "End",
+              style: styles.textInput,
+              onTextChange: (text) => console.log(text),
             }}
             listProps={{
               nestedScrollEnabled: true,
@@ -85,6 +87,23 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: "center",
+    paddingBottom: 20,
+  },
+  textInput: {
+    padding: 12,
+    borderWidth: 1,
+    backgroundColor: "gray",
+    fontSize: 20,
+    fontWeight: "bold",
+    borderRadius: 5,
+  },
+  textDropdown: {
+    padding: 10,
+    marginTop: 2,
+    backgroundColor: "black",
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 5,
   },
   header: {
     color: "white",

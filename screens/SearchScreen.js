@@ -19,8 +19,8 @@ export default class SearchScreen extends Component {
 
     const stationData = await stations.json();
     const station = Object.keys(stationData).map((i) => ({
-      id: stationData[i],
-      name: i,
+      id: i,
+      name: stationData[i],
     }));
 
     this.setState({
@@ -28,7 +28,7 @@ export default class SearchScreen extends Component {
     });
   }
 
-  updatetartSearch = (startSearch) => {
+  updateStartSearch = (startSearch) => {
     this.setState({ startSearch, startStation: "" });
   };
 
@@ -70,11 +70,11 @@ export default class SearchScreen extends Component {
           <Text style={styles.header}>Historic Train Times</Text>
         </View>
         <TextInput
-          style={styles.TextInput}
+          style={styles.textInput}
           placeholderTextColor="black"
           backgroundColor="white"
           placeholder="Start"
-          onChangeText={this.updatetartSearch}
+          onChangeText={this.updateStartSearch}
           value={
             this.state.startSearch ||
             this.state.stations.find((i) => i.id === this.state.startStation)
@@ -82,7 +82,12 @@ export default class SearchScreen extends Component {
           }
         ></TextInput>
         <View>
-          <ScrollView keyboardShouldPersistTaps="always">{stations}</ScrollView>
+          <ScrollView
+            style={styles.stationScroll}
+            keyboardShouldPersistTaps="always"
+          >
+            {stations}
+          </ScrollView>
         </View>
       </View>
     );
@@ -100,14 +105,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 20,
   },
-  textInput: {
-    padding: 12,
-    borderWidth: 1,
-    backgroundColor: "gray",
-    fontSize: 20,
-    fontWeight: "bold",
-    borderRadius: 5,
-  },
   textDropdown: {
     padding: 10,
     marginTop: 2,
@@ -121,11 +118,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 40,
   },
-  TextInput: {
+  textInput: {
     padding: 12,
     borderWidth: 1,
     backgroundColor: "gray",
     borderRadius: 5,
     height: 40,
+  },
+  stationScroll: {
+    height: 150,
   },
 });

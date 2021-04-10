@@ -8,6 +8,7 @@ import {
   TextInput,
   Keyboard,
 } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default class SearchScreen extends Component {
   state = {};
@@ -44,6 +45,20 @@ export default class SearchScreen extends Component {
   handleEndStationPress = (id) => {
     this.setState({ endStation: id, endSearch: "" });
     Keyboard.dismiss();
+  };
+
+  handleDatePress = () => {
+    this.setState({ showDate: true });
+  };
+
+  handleDateSelection = (event, selectedDate) => {
+    console.log(selectedDate);
+    this.setState({ showTime: true, showDate: false });
+  };
+
+  handleTimeSelection = (event, selectedTime) => {
+    console.log(selectedTime.toString());
+    this.setState({ showTime: false });
   };
 
   render() {
@@ -88,6 +103,36 @@ export default class SearchScreen extends Component {
             {i.name}
           </Text>
         ));
+    }
+
+    let dateTimePicker = <View></View>;
+
+    if (this.state.showDate) {
+      const maxDate = new Date();
+      maxDate.setDate(maxDate.getDate() - 1);
+
+      const minDate = new Date();
+      minDate.setMonth(minDate.getMonth() - 12);
+
+      dateTimePicker = (
+        <DateTimePicker
+          maximumDate={maxDate}
+          minimumDate={minDate}
+          value={maxDate}
+          mode={"date"}
+          onChange={this.handleDateSelection}
+        ></DateTimePicker>
+      );
+    }
+
+    if (this.state.showTime) {
+      dateTimePicker = (
+        <DateTimePicker
+          value={new Date()}
+          mode={"time"}
+          onChange={this.handleTimeSelection}
+        ></DateTimePicker>
+      );
     }
 
     return (
@@ -135,6 +180,10 @@ export default class SearchScreen extends Component {
             {endStations}
           </ScrollView>
         </View>
+        <Text style={styles.textInput} onPress={() => this.handleDatePress()}>
+          Date
+        </Text>
+        {dateTimePicker}
       </View>
     );
   }
@@ -167,7 +216,7 @@ const styles = StyleSheet.create({
   textInput: {
     padding: 12,
     borderWidth: 1,
-    backgroundColor: "gray",
+    backgroundColor: "white",
     borderRadius: 5,
     height: 40,
   },

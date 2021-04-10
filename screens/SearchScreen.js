@@ -37,6 +37,15 @@ export default class SearchScreen extends Component {
     Keyboard.dismiss();
   };
 
+  updateEndSearch = (endSearch) => {
+    this.setState({ endSearch, endStation: "" });
+  };
+
+  handleEndStationPress = (id) => {
+    this.setState({ endStation: id, endSearch: "" });
+    Keyboard.dismiss();
+  };
+
   render() {
     if (!this.state.stations) {
       return (
@@ -46,10 +55,10 @@ export default class SearchScreen extends Component {
       );
     }
 
-    let stations = [];
+    let startStations = [];
 
     if (this.state.startSearch) {
-      stations = this.state.stations
+      startStations = this.state.stations
         .filter((i) =>
           i.name.toLowerCase().startsWith(this.state.startSearch.toLowerCase())
         )
@@ -58,6 +67,23 @@ export default class SearchScreen extends Component {
             key={i.id}
             style={styles.textDropdown}
             onPress={() => this.handleStartStationPress(i.id)}
+          >
+            {i.name}
+          </Text>
+        ));
+    }
+
+    let endStations = [];
+    if (this.state.endSearch) {
+      endStations = this.state.stations
+        .filter((i) =>
+          i.name.toLowerCase().startsWith(this.state.endSearch.toLowerCase())
+        )
+        .map((i) => (
+          <Text
+            key={i.id}
+            style={styles.textDropdown}
+            onPress={() => this.handleEndStationPress(i.id)}
           >
             {i.name}
           </Text>
@@ -86,7 +112,27 @@ export default class SearchScreen extends Component {
             style={styles.stationScroll}
             keyboardShouldPersistTaps="always"
           >
-            {stations}
+            {startStations}
+          </ScrollView>
+        </View>
+        <TextInput
+          style={styles.textInput}
+          placeholderTextColor="black"
+          backgroundColor="white"
+          placeholder="End"
+          onChangeText={this.updateEndSearch}
+          value={
+            this.state.endSearch ||
+            this.state.stations.find((i) => i.id === this.state.endStation)
+              ?.name
+          }
+        ></TextInput>
+        <View>
+          <ScrollView
+            style={styles.stationScroll}
+            keyboardShouldPersistTaps="always"
+          >
+            {endStations}
           </ScrollView>
         </View>
       </View>
@@ -126,6 +172,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   stationScroll: {
-    height: 150,
+    maxHeight: 150,
+    marginBottom: 5,
   },
 });

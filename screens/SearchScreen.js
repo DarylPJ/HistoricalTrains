@@ -8,14 +8,21 @@ import {
   ScrollView,
   TextInput,
   Keyboard,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default class SearchScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.navigation = props.navigation;
+  }
+
   state = {};
 
   async componentDidMount() {
-    var stations = await fetch(
+    const stations = await fetch(
       "https://historical-train-api.herokuapp.com/StationCodes"
     );
 
@@ -53,6 +60,13 @@ export default class SearchScreen extends Component {
   };
 
   handleDateSelection = (event, selectedDate) => {
+    if (!selectedDate) {
+      this.setState({
+        showDate: false,
+      });
+      return;
+    }
+
     this.setState({
       selectedDate: selectedDate,
       showTime: true,
@@ -62,10 +76,51 @@ export default class SearchScreen extends Component {
 
   handleTimeSelection = (event, selectedTime) => {
     const date = this.state.selectedDate;
-    date.setHours(selectedTime.getHours());
-    date.setMinutes(selectedTime.getMinutes());
+    if (selectedTime) {
+      date.setHours(selectedTime.getHours());
+      date.setMinutes(selectedTime.getMinutes());
+    } else {
+      date.setHours(0);
+      date.setMinutes(0);
+    }
+
     date.setSeconds(0);
     this.setState({ selectedDateTime: date, showTime: false });
+  };
+
+  handleSearch = () => {
+    const isStartValid =
+      this.state.stations.find((i) => i.id === this.state.startStation) !==
+      undefined;
+
+    const isEndValid =
+      this.state.stations.find((i) => i.id === this.state.endStation) !==
+      undefined;
+    const istimeValid = this.state.selectedDateTime !== undefined;
+
+    let errorMessage = "";
+    if (!isStartValid) {
+      errorMessage += "Select a Start Station.\n";
+    }
+
+    if (!isEndValid) {
+      errorMessage += "Select an End Station.\n";
+    }
+
+    if (!istimeValid) {
+      errorMessage += "Select a Date.";
+    }
+
+    if (errorMessage !== "") {
+      Alert.alert("Validation Error", errorMessage);
+      return;
+    }
+
+    this.navigation.navigate("Results", {
+      startStation: this.state.startStation,
+      endStation: this.state.endStation,
+      time: this.state.selectedDateTime.toString(),
+    });
   };
 
   render() {
@@ -187,10 +242,13 @@ export default class SearchScreen extends Component {
             {endStations}
           </ScrollView>
         </View>
-        <Text style={styles.textInput} onPress={() => this.handleDatePress()}>
+        <Text
+          style={[styles.textInput, { marginBottom: 5 }]}
+          onPress={() => this.handleDatePress()}
+        >
           {this.state.selectedDateTime?.toString().slice(0, 24) ?? "Date"}
         </Text>
-        <Button title="Find Trains"></Button>
+        <Button title="Find Trains" onPress={this.handleSearch}></Button>
         {dateTimePicker}
       </View>
     );

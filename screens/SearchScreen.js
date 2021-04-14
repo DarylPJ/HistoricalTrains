@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {
   ActivityIndicator,
   Text,
+  Button,
   View,
   StyleSheet,
   ScrollView,
@@ -52,13 +53,19 @@ export default class SearchScreen extends Component {
   };
 
   handleDateSelection = (event, selectedDate) => {
-    console.log(selectedDate);
-    this.setState({ showTime: true, showDate: false });
+    this.setState({
+      selectedDate: selectedDate,
+      showTime: true,
+      showDate: false,
+    });
   };
 
   handleTimeSelection = (event, selectedTime) => {
-    console.log(selectedTime.toString());
-    this.setState({ showTime: false });
+    const date = this.state.selectedDate;
+    date.setHours(selectedTime.getHours());
+    date.setMinutes(selectedTime.getMinutes());
+    date.setSeconds(0);
+    this.setState({ selectedDateTime: date, showTime: false });
   };
 
   render() {
@@ -181,8 +188,9 @@ export default class SearchScreen extends Component {
           </ScrollView>
         </View>
         <Text style={styles.textInput} onPress={() => this.handleDatePress()}>
-          Date
+          {this.state.selectedDateTime?.toString().slice(0, 24) ?? "Date"}
         </Text>
+        <Button title="Find Trains"></Button>
         {dateTimePicker}
       </View>
     );

@@ -30,6 +30,7 @@ export default class SearchScreen extends Component {
     const station = Object.keys(stationData).map((i) => ({
       id: i,
       name: stationData[i],
+      search: stationData[i].split(" ").map((i) => i.toLowerCase()),
     }));
 
     this.setState({
@@ -120,6 +121,7 @@ export default class SearchScreen extends Component {
       startStation: this.state.startStation,
       endStation: this.state.endStation,
       time: this.state.selectedDateTime.toString(),
+      stationCodes: this.state.stations,
     });
   };
 
@@ -135,9 +137,13 @@ export default class SearchScreen extends Component {
     let startStations = [];
 
     if (this.state.startSearch) {
+      const splitSearch = this.state.startSearch
+        .split(" ")
+        .map((i) => i.toLowerCase());
+
       startStations = this.state.stations
         .filter((i) =>
-          i.name.toLowerCase().includes(this.state.startSearch.toLowerCase())
+          splitSearch.every((j) => i.search.some((k) => k.startsWith(j)))
         )
         .map((i) => (
           <Text
@@ -152,9 +158,13 @@ export default class SearchScreen extends Component {
 
     let endStations = [];
     if (this.state.endSearch) {
+      const splitSearch = this.state.endSearch
+        .split(" ")
+        .map((i) => i.toLowerCase());
+
       endStations = this.state.stations
         .filter((i) =>
-          i.name.toLowerCase().includes(this.state.endSearch.toLowerCase())
+          splitSearch.every((j) => i.search.some((k) => k.startsWith(j)))
         )
         .map((i) => (
           <Text

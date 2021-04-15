@@ -10,6 +10,7 @@ export default class ResultsScreen extends Component {
 
     this.state.startStation = props?.route?.params?.startStation;
     this.state.endStation = props?.route?.params?.endStation;
+    this.state.stationCodes = props?.route?.params?.stationCodes;
 
     if (props?.route?.params?.time) {
       this.state.time = props.route.params.time;
@@ -28,7 +29,6 @@ export default class ResultsScreen extends Component {
       this.state.startStation
     }&endLocation=${this.state.endStation}`;
 
-    console.log(url);
     const rawData = await fetch(url);
     const data = await rawData.json();
 
@@ -60,7 +60,27 @@ export default class ResultsScreen extends Component {
       let key = 0;
       return this.state.data.map((i) => {
         key++;
-        return <ResultItem key={key} data={i}></ResultItem>;
+
+        const a = this.state.stationCodes;
+
+        return (
+          <ResultItem
+            key={key}
+            destination={
+              this.state.stationCodes.find(
+                (j) => j.id === i.destinationLocation
+              ).name
+            }
+            origin={
+              this.state.stationCodes.find((j) => j.id === i.originLocation)
+                .name
+            }
+            startStation={i.locationData[this.state.startStation]}
+            startStationName={this.state.startStation}
+            endStation={i.locationData[this.state.endStation]}
+            endStationName={this.state.endStation}
+          ></ResultItem>
+        );
       });
     }
 

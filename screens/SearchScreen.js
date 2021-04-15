@@ -137,7 +137,7 @@ export default class SearchScreen extends Component {
     if (this.state.startSearch) {
       startStations = this.state.stations
         .filter((i) =>
-          i.name.toLowerCase().startsWith(this.state.startSearch.toLowerCase())
+          i.name.toLowerCase().includes(this.state.startSearch.toLowerCase())
         )
         .map((i) => (
           <Text
@@ -154,7 +154,7 @@ export default class SearchScreen extends Component {
     if (this.state.endSearch) {
       endStations = this.state.stations
         .filter((i) =>
-          i.name.toLowerCase().startsWith(this.state.endSearch.toLowerCase())
+          i.name.toLowerCase().includes(this.state.endSearch.toLowerCase())
         )
         .map((i) => (
           <Text

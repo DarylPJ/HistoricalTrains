@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
+import ResultItem from "../components/ResultItem";
 
 export default class ResultsScreen extends Component {
   state = {};
@@ -17,8 +18,9 @@ export default class ResultsScreen extends Component {
 
   async componentDidMount() {
     const startTime = new Date(this.state.time);
+    startTime.setMinutes(startTime.getMinutes() - 15);
     const endTime = new Date(this.state.time);
-    endTime.setMinutes(endTime.getMinutes() + 30);
+    endTime.setMinutes(endTime.getMinutes() + 15);
 
     const url = `https://historical-train-api.herokuapp.com/HistoricalData?startDate=${this.formatDate(
       startTime
@@ -26,6 +28,7 @@ export default class ResultsScreen extends Component {
       this.state.startStation
     }&endLocation=${this.state.endStation}`;
 
+    console.log(url);
     const rawData = await fetch(url);
     const data = await rawData.json();
 
@@ -54,9 +57,26 @@ export default class ResultsScreen extends Component {
 
   render() {
     if (this.state.data) {
-      return <Text>{JSON.stringify(this.state.data)}</Text>;
+      let key = 0;
+      return this.state.data.map((i) => {
+        key++;
+        return <ResultItem key={key} data={i}></ResultItem>;
+      });
     }
 
-    return <View></View>;
+    return (
+      <View style={[styles.container, { justifyContent: "center" }]}>
+        <ActivityIndicator size="large" color="white"></ActivityIndicator>
+      </View>
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 40,
+    flex: 1,
+    backgroundColor: "black",
+    alignItems: "stretch",
+  },
+});

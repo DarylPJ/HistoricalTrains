@@ -25,15 +25,26 @@ export default class ResultsScreen extends Component {
 
   async componentDidMount() {
     const startTime = new Date(this.state.time);
-    startTime.setMinutes(startTime.getMinutes() - 15);
-    const endTime = new Date(this.state.time);
-    endTime.setMinutes(endTime.getMinutes() + 15);
+
+    if (startTime.getHours() == 0 && startTime.getMinutes() <= 15) {
+      startTime.setMinutes(0);
+    }
+
+    const endTime = new Date(startTime);
+
+    if (endTime.getHours() === 23 && endTime.getMinutes() >= 30) {
+      endTime.setMinutes(59);
+    } else {
+      endTime.setMinutes(endTime.getMinutes() + 30);
+    }
 
     const url = `https://historical-train-api.herokuapp.com/HistoricalData?startDate=${this.formatDate(
       startTime
     )}&endDate=${this.formatDate(endTime)}&startLocation=${
       this.state.startStation
     }&endLocation=${this.state.endStation}`;
+
+    console.log(url);
 
     let rawData;
     try {

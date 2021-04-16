@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import ResultItem from "../components/ResultItem";
 
 export default class ResultsScreen extends Component {
@@ -57,8 +63,30 @@ export default class ResultsScreen extends Component {
 
   render() {
     if (this.state.data) {
+      if (this.state.data.length === 0) {
+        return (
+          <View style={[styles.container]}>
+            <Text style={styles.text}>
+              No direct train services found between{" "}
+              {
+                this.state.stationCodes.find(
+                  (j) => j.id === this.state.startStation
+                ).name
+              }{" "}
+              and{" "}
+              {
+                this.state.stationCodes.find(
+                  (j) => j.id === this.state.endStation
+                ).name
+              }{" "}
+              on {this.state.time.toString().slice(0, 24)}
+            </Text>
+          </View>
+        );
+      }
+
       let key = 0;
-      return this.state.data.map((i) => {
+      var results = this.state.data.map((i) => {
         key++;
 
         const a = this.state.stationCodes;
@@ -76,12 +104,26 @@ export default class ResultsScreen extends Component {
                 .name
             }
             startStation={i.locationData[this.state.startStation]}
-            startStationName={this.state.startStation}
+            startStationName={
+              this.state.stationCodes.find(
+                (j) => j.id === this.state.startStation
+              ).name
+            }
             endStation={i.locationData[this.state.endStation]}
-            endStationName={this.state.endStation}
+            endStationName={
+              this.state.stationCodes.find(
+                (j) => j.id === this.state.endStation
+              ).name
+            }
           ></ResultItem>
         );
       });
+
+      return (
+        <View style={styles.container}>
+          <ScrollView>{results}</ScrollView>
+        </View>
+      );
     }
 
     return (
@@ -94,9 +136,12 @@ export default class ResultsScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
     flex: 1,
     backgroundColor: "black",
     alignItems: "stretch",
+  },
+  text: {
+    color: "white",
+    fontSize: 15,
   },
 });

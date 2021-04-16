@@ -4,11 +4,11 @@ import { Text, View, StyleSheet } from "react-native";
 export default function ResultItem(props) {
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, { fontSize: 20 }]}>
-        {props.origin} {"->"} {props.destination}
+      <Text style={[styles.text, { fontSize: 25 }]}>
+        {props.startStationName} {"->"} {props.endStationName}
       </Text>
       <Text style={styles.text}>{GetDetail(props.startStation)}</Text>
-      <Text style={styles.text}>{JSON.stringify(props.endStation)}</Text>
+      <Text style={styles.text}>{GetDetail(props.endStation)}</Text>
     </View>
   );
 }
@@ -16,7 +16,23 @@ export default function ResultItem(props) {
 function GetDetail(stationInfo) {
   let detail = "";
   if (stationInfo.timetabledDeparture) {
-    detail += `Timetabled Departure: ${stationInfo.timetabledDeparture}`;
+    detail += `Timetabled Departure: ${stationInfo.timetabledDeparture}\n`;
+  }
+
+  if (stationInfo.timetabledArrival) {
+    detail += `Timetabled Arrival: ${stationInfo.timetabledArrival}\n`;
+  }
+
+  if (stationInfo.actualDeparture) {
+    detail += `Actual Departure: ${stationInfo.actualDeparture}\n`;
+  }
+
+  if (stationInfo.actualArrival) {
+    detail += `Actual Arrival: ${stationInfo.actualArrival}\n`;
+  }
+
+  if (stationInfo.delayReason) {
+    detail += `Delay Reason: ${stationInfo.delayReason}\n`;
   }
 
   return detail;
@@ -34,5 +50,6 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     marginBottom: 5,
+    fontSize: 15,
   },
 });

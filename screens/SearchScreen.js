@@ -22,9 +22,17 @@ export default class SearchScreen extends Component {
   state = {};
 
   async componentDidMount() {
-    const stations = await fetch(
-      "https://historical-train-api.herokuapp.com/StationCodes"
-    );
+    let stations;
+    try {
+      stations = await fetch(
+        "https://historical-train-api.herokuapp.com/StationCodes"
+      );
+    } catch {
+      Alert.alert(
+        "Error fetching tations",
+        "Ensure you are connected to the internet and try again."
+      );
+    }
 
     const stationData = await stations.json();
     const station = Object.keys(stationData).map((i) => ({

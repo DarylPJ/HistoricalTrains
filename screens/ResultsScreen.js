@@ -35,7 +35,16 @@ export default class ResultsScreen extends Component {
       this.state.startStation
     }&endLocation=${this.state.endStation}`;
 
-    const rawData = await fetch(url);
+    let rawData;
+    try {
+      rawData = await fetch(url);
+    } catch {
+      Alert.alert(
+        "Error fetching tations",
+        "Ensure you are connected to the internet and try again."
+      );
+    }
+
     const data = await rawData.json();
 
     this.setState({

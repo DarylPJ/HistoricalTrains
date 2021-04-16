@@ -218,7 +218,7 @@ export default class SearchScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.header}>Historic Train Times</Text>
+          <Text style={styles.header}>Past Train Times</Text>
         </View>
         <TextInput
           style={styles.textInput}

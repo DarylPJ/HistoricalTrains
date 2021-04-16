@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import {
   ActivityIndicator,
   View,
+  Dimensions,
   Text,
   StyleSheet,
   ScrollView,
+  Image,
+  TouchableOpacity,
+  Linking,
 } from "react-native";
 import ResultItem from "../components/ResultItem";
 
@@ -26,8 +30,12 @@ export default class ResultsScreen extends Component {
   async componentDidMount() {
     const startTime = new Date(this.state.time);
 
-    if (startTime.getHours() == 0 && startTime.getMinutes() <= 15) {
+    if (startTime.getHours() === 0 && startTime.getMinutes() <= 15) {
       startTime.setMinutes(0);
+    }
+
+    if (startTime.getHours() === 23 && startTime.getMinutes() >= 30) {
+      startTime.setMinutes(30);
     }
 
     const endTime = new Date(startTime);
@@ -142,6 +150,14 @@ export default class ResultsScreen extends Component {
       return (
         <View style={styles.container}>
           <ScrollView>{results}</ScrollView>
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://www.nationalrail.co.uk/")}
+          >
+            <Image
+              style={styles.logo}
+              source={require("../assets/NRE_Powered_logo.png")}
+            ></Image>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -157,11 +173,17 @@ export default class ResultsScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "space-between",
     backgroundColor: "black",
     alignItems: "stretch",
   },
   text: {
     color: "white",
     fontSize: 15,
+  },
+  logo: {
+    width: Dimensions.get("window").width,
+    height: 150,
+    resizeMode: "contain",
   },
 });
